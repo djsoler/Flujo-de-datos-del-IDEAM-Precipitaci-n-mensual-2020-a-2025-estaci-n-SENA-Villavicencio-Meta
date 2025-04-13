@@ -1,0 +1,28 @@
+[2025-04-11T07:06:23.629+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: proyecto_bigdata.modelo_machine_learning scheduled__2024-04-10T00:00:00+00:00 [queued]>
+[2025-04-11T07:06:23.637+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: proyecto_bigdata.modelo_machine_learning scheduled__2024-04-10T00:00:00+00:00 [queued]>
+[2025-04-11T07:06:23.638+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 1
+[2025-04-11T07:06:23.653+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): modelo_machine_learning> on 2024-04-10 00:00:00+00:00
+[2025-04-11T07:06:23.660+0000] {standard_task_runner.py:60} INFO - Started process 397 to run task
+[2025-04-11T07:06:23.662+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'proyecto_bigdata', 'modelo_machine_learning', 'scheduled__2024-04-10T00:00:00+00:00', '--job-id', '6', '--raw', '--subdir', 'DAGS_FOLDER/proyecto_bigdata_dag.py', '--cfg-path', '/tmp/tmpz1_zsc00']
+[2025-04-11T07:06:23.664+0000] {standard_task_runner.py:88} INFO - Job 6: Subtask modelo_machine_learning
+[2025-04-11T07:06:23.718+0000] {task_command.py:423} INFO - Running <TaskInstance: proyecto_bigdata.modelo_machine_learning scheduled__2024-04-10T00:00:00+00:00 [running]> on host 4193653a407b
+[2025-04-11T07:06:23.797+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='proyecto_bigdata' AIRFLOW_CTX_TASK_ID='modelo_machine_learning' AIRFLOW_CTX_EXECUTION_DATE='2024-04-10T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2024-04-10T00:00:00+00:00'
+[2025-04-11T07:06:23.830+0000] {logging_mixin.py:188} INFO - Coeficiente de regresión: -1.4097352909154528e-06
+[2025-04-11T07:06:23.832+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-04-11T07:06:23.842+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=proyecto_bigdata, task_id=modelo_machine_learning, execution_date=20240410T000000, start_date=20250411T070623, end_date=20250411T070623
+[2025-04-11T07:06:23.877+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-04-11T07:06:23.893+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-04-11T07:52:35.571+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: proyecto_bigdata.modelo_machine_learning scheduled__2024-04-10T00:00:00+00:00 [queued]>
+[2025-04-11T07:52:35.580+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: proyecto_bigdata.modelo_machine_learning scheduled__2024-04-10T00:00:00+00:00 [queued]>
+[2025-04-11T07:52:35.581+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 1
+[2025-04-11T07:52:35.593+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): modelo_machine_learning> on 2024-04-10 00:00:00+00:00
+[2025-04-11T07:52:35.601+0000] {standard_task_runner.py:60} INFO - Started process 407 to run task
+[2025-04-11T07:52:35.605+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'proyecto_bigdata', 'modelo_machine_learning', 'scheduled__2024-04-10T00:00:00+00:00', '--job-id', '9', '--raw', '--subdir', 'DAGS_FOLDER/proyecto_bigdata_dag.py', '--cfg-path', '/tmp/tmplkqdhlty']
+[2025-04-11T07:52:35.608+0000] {standard_task_runner.py:88} INFO - Job 9: Subtask modelo_machine_learning
+[2025-04-11T07:52:35.662+0000] {task_command.py:423} INFO - Running <TaskInstance: proyecto_bigdata.modelo_machine_learning scheduled__2024-04-10T00:00:00+00:00 [running]> on host 04c54140d555
+[2025-04-11T07:52:35.744+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='proyecto_bigdata' AIRFLOW_CTX_TASK_ID='modelo_machine_learning' AIRFLOW_CTX_EXECUTION_DATE='2024-04-10T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2024-04-10T00:00:00+00:00'
+[2025-04-11T07:52:35.774+0000] {logging_mixin.py:188} INFO - Coeficiente de regresión: -1.4097352909154528e-06
+[2025-04-11T07:52:35.775+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-04-11T07:52:35.784+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=proyecto_bigdata, task_id=modelo_machine_learning, execution_date=20240410T000000, start_date=20250411T075235, end_date=20250411T075235
+[2025-04-11T07:52:35.820+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-04-11T07:52:35.837+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

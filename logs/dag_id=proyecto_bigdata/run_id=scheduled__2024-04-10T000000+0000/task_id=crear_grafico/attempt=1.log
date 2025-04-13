@@ -1,0 +1,26 @@
+[2025-04-11T07:06:21.799+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: proyecto_bigdata.crear_grafico scheduled__2024-04-10T00:00:00+00:00 [queued]>
+[2025-04-11T07:06:21.808+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: proyecto_bigdata.crear_grafico scheduled__2024-04-10T00:00:00+00:00 [queued]>
+[2025-04-11T07:06:21.809+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 1
+[2025-04-11T07:06:21.824+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): crear_grafico> on 2024-04-10 00:00:00+00:00
+[2025-04-11T07:06:21.830+0000] {standard_task_runner.py:60} INFO - Started process 362 to run task
+[2025-04-11T07:06:21.834+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'proyecto_bigdata', 'crear_grafico', 'scheduled__2024-04-10T00:00:00+00:00', '--job-id', '5', '--raw', '--subdir', 'DAGS_FOLDER/proyecto_bigdata_dag.py', '--cfg-path', '/tmp/tmphx0uyvar']
+[2025-04-11T07:06:21.837+0000] {standard_task_runner.py:88} INFO - Job 5: Subtask crear_grafico
+[2025-04-11T07:06:21.892+0000] {task_command.py:423} INFO - Running <TaskInstance: proyecto_bigdata.crear_grafico scheduled__2024-04-10T00:00:00+00:00 [running]> on host 4193653a407b
+[2025-04-11T07:06:21.973+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='proyecto_bigdata' AIRFLOW_CTX_TASK_ID='crear_grafico' AIRFLOW_CTX_EXECUTION_DATE='2024-04-10T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2024-04-10T00:00:00+00:00'
+[2025-04-11T07:06:22.234+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-04-11T07:06:22.246+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=proyecto_bigdata, task_id=crear_grafico, execution_date=20240410T000000, start_date=20250411T070621, end_date=20250411T070622
+[2025-04-11T07:06:22.292+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-04-11T07:06:22.309+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-04-11T07:52:33.130+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: proyecto_bigdata.crear_grafico scheduled__2024-04-10T00:00:00+00:00 [queued]>
+[2025-04-11T07:52:33.137+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: proyecto_bigdata.crear_grafico scheduled__2024-04-10T00:00:00+00:00 [queued]>
+[2025-04-11T07:52:33.138+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 1
+[2025-04-11T07:52:33.156+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): crear_grafico> on 2024-04-10 00:00:00+00:00
+[2025-04-11T07:52:33.162+0000] {standard_task_runner.py:60} INFO - Started process 336 to run task
+[2025-04-11T07:52:33.164+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'proyecto_bigdata', 'crear_grafico', 'scheduled__2024-04-10T00:00:00+00:00', '--job-id', '7', '--raw', '--subdir', 'DAGS_FOLDER/proyecto_bigdata_dag.py', '--cfg-path', '/tmp/tmpg1w4yslx']
+[2025-04-11T07:52:33.167+0000] {standard_task_runner.py:88} INFO - Job 7: Subtask crear_grafico
+[2025-04-11T07:52:33.214+0000] {task_command.py:423} INFO - Running <TaskInstance: proyecto_bigdata.crear_grafico scheduled__2024-04-10T00:00:00+00:00 [running]> on host 04c54140d555
+[2025-04-11T07:52:33.275+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='proyecto_bigdata' AIRFLOW_CTX_TASK_ID='crear_grafico' AIRFLOW_CTX_EXECUTION_DATE='2024-04-10T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2024-04-10T00:00:00+00:00'
+[2025-04-11T07:52:33.529+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-04-11T07:52:33.539+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=proyecto_bigdata, task_id=crear_grafico, execution_date=20240410T000000, start_date=20250411T075233, end_date=20250411T075233
+[2025-04-11T07:52:33.581+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-04-11T07:52:33.598+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

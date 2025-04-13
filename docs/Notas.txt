@@ -1,0 +1,516 @@
+cd C:\Users\JONANNA\Desktop\airflow
+
+docker-compose run airflow-webserver airflow users create --username admin --firstname Johanna --lastname Soler --role Admin --email johannasolermine@gmail.com --password admin123
+
+
+
+------------------------
+✅ 3. Almacenamiento en SQL (Data Warehouse)
+✔️ Lo que ya hiciste:
+
+PostgreSQL está corriendo en Docker.
+
+El DAG guarda datos en SQL (esto se puede validar si hay una tarea que cargue datos con psycopg2, sqlalchemy, o similar).
+
+🔍 ¿Qué debes validar para cumplir completamente?
+
+¿Existe un esquema claro de las tablas?
+
+Tipos de datos, relaciones entre tablas (si hay más de una).
+
+Puedes documentarlo con un simple dibujo o exportar el schema.sql.
+
+¿Es un Data Warehouse?
+
+Se espera que puedas correr consultas complejas (ejemplo: agregaciones, joins, filtros por fecha).
+
+No es obligatorio usar star schema, pero sí mostrar que la base fue pensada para análisis, no solo como tabla plana.
+
+📌 Recomendación: crea un .sql o .md donde expliques la estructura de tu base de datos.
+
+✅ 4. Visualizaciones y Machine Learning
+❓ Por verificar:
+
+¿Ya hiciste las visualizaciones dentro del DAG?
+
+Por ejemplo, un DAG que guarde gráficas generadas con matplotlib en /opt/airflow/salidas.
+
+¿Incluiste un modelo de ML (aunque sea simple)?
+
+Puede ser una regresión o un clustering con scikit-learn, ejecutado como una tarea del DAG.
+
+📌 Ejemplo mínimo: un task que entrena un modelo y guarda una predicción o score en la base o en un archivo .csv.
+
+✅ 5. Documentación y Video
+✔️ PDFs que ya subiste:
+
+Tienes:
+
+List DAG Run
+
+Cluster Activity
+
+ahora publiquemos el proyecto en github con toda la documentación usuario djsoler, ubicación del proyecto local C:\Users\JONANNA\Desktop airflow
+
+Datasets
+
+Variables
+
+Users
+
+DAG Grid
+
+🔍 Falta entregar:
+
+✅ Video corto mostrando:
+
+Que el flujo se ejecuta.
+
+Qué hace cada DAG.
+
+Que Kafka-Dask-SQL están integrados.
+
+Qué resultado sale (gráfica o predicción, aunque sea simple).
+
+✅ Documentación escrita (máximo 2 páginas):
+
+Un diagrama tipo flujo del proceso (puede ser a mano).
+
+Explicación técnica de cada fase.
+
+Breve justificación de elecciones (por qué PostgreSQL, por qué ese modelo, etc.).
+
+📌 RESUMEN CHECKLIST FINAL
+Requisito	¿Cumplido?	Recomendación
+DAGs orquestados (Airflow)	✅	Confirmado
+Kafka funcionando	❓	Verificar que esté activo y vinculado
+Dask para transformación	❓	Reemplazar Pandas por Dask si no lo hiciste
+SQL como destino final	✅	Agregar esquema de la DB
+Esquema DB documentado	❌	Crear .sql o imagen simple explicando
+Data warehouse funcional	✅ parcial	Agrega ejemplo de consultas
+Visualizaciones (2 mín.)	❓	Asegurar que estén dentro del DAG y guardadas
+Modelo ML en DAG	❓	Entrenar uno simple dentro de un task
+Documentación técnica (2 pág)	❌	Crear PDF con flujo y explicación
+Video corto de prueba	❌	Grabar pantalla mostrando el flujo funcionando
+
+
+-----------------------
+
+
+PSQL airflow=#
+
+docker-compose run airflow-webserver airflow users create \
+    --username admin \
+    --firstname Johanna \
+    --lastname Soler \
+    --role Admin \
+    --email johannasolermine@gmail.com \
+    --password admin123
+
+
+proyecto_bigdata_dag.py
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from datetime import datetime
+import pandas as pd
+import matplotlib.pyplot as plt
+from sqlalchemy import create_engine
+from sklearn.linear_model import LinearRegression
+
+def leer_datos_kafka():
+    df = pd.read_csv('/opt/airflow/salidas/predicciones.csv')
+    df.to_csv('/opt/airflow/salidas/datos_leidos.csv', index=False)
+
+def procesar_datos_dask():
+    df = pd.read_csv('/opt/airflow/salidas/datos_leidos.csv')
+    df['valor'] = df['valor'] * 2
+    df.to_csv('/opt/airflow/salidas/datos_procesados.csv', index=False)
+
+def guardar_en_sql():
+    df = pd.read_csv('/opt/airflow/salidas/datos_procesados.csv')
+    engine = create_engine('postgresql+psycopg2://airflow:airflow@postgres:5432/airflow')
+    df.to_sql('datos_guardados', engine, index=False, if_exists='replace')
+
+def graficar():
+    df = pd.read_csv('/opt/airflow/salidas/datos_procesados.csv')
+    df.plot(x='fecha', y='valor', kind='line')
+    plt.title('Gráfico de valores procesados')
+    plt.xlabel('Fecha')
+    plt.ylabel('Valor')
+    plt.grid(True)
+    plt.savefig('/opt/airflow/salidas/grafico.png')
+
+def modelo_ml():
+    df = pd.read_csv('/opt/airflow/salidas/datos_procesados.csv')
+    df['fecha'] = pd.to_datetime(df['fecha'], errors='coerce')
+    df = df.dropna(subset=['fecha'])
+    df['fecha'] = df['fecha'].view('int64') // 10**9
+    X = df[['fecha']]
+    y = df['valor']
+    model = LinearRegression()
+    model.fit(X, y)
+    coef = model.coef_[0]
+    print(f"Coeficiente de regresión: {coef}")
+
+default_args = {
+    'start_date': datetime(2024, 4, 10),
+}
+
+with DAG('proyecto_bigdata',
+         schedule_interval='@once',
+         catchup=False,
+         default_args=default_args,
+         description='Pipeline de Big Data con Airflow') as dag:
+
+    tarea1 = PythonOperator(task_id='leer_kafka', python_callable=leer_datos_kafka)
+    tarea2 = PythonOperator(task_id='procesar_datos', python_callable=procesar_datos_dask)
+    tarea3 = PythonOperator(task_id='guardar_postgresql', python_callable=guardar_en_sql)
+    tarea4 = PythonOperator(task_id='crear_grafico', python_callable=graficar)
+    tarea5 = PythonOperator(task_id='modelo_machine_learning', python_callable=modelo_ml)
+
+    tarea1 >> tarea2 >> tarea3 >> tarea4 >> tarea5
+
+
+
+----------------------------------------------------
+Qué vamos a hacer?
+Agregaremos una nueva tarea Python en tu DAG, llamada por ejemplo empaquetar_resultados, que:
+
+Buscará todos los archivos dentro de /opt/airflow/salidas/.
+
+Los agrupará en un archivo ZIP llamado resultados_<fecha>.zip.
+
+Guardará ese .zip en la misma carpeta.
+
+🧩 Paso 1: Código Python para empaquetar
+Agrega este código en tu DAG (proyecto_bigdata_dag.py):
+
+python
+Copiar
+Editar
+from datetime import datetime
+import zipfile
+import os
+
+def empaquetar_resultados():
+    carpeta_salida = "/opt/airflow/salidas"
+    fecha = datetime.now().strftime("%Y%m%d_%H%M%S")
+    nombre_zip = os.path.join(carpeta_salida, f"resultados_{fecha}.zip")
+
+    with zipfile.ZipFile(nombre_zip, 'w') as zipf:
+        for archivo in os.listdir(carpeta_salida):
+            ruta_archivo = os.path.join(carpeta_salida, archivo)
+            if os.path.isfile(ruta_archivo) and not archivo.endswith('.zip'):
+                zipf.write(ruta_archivo, arcname=archivo)
+🧩 Paso 2: Agregar la tarea al DAG
+Al final de la definición de tareas en tu DAG, añade:
+
+python
+Copiar
+Editar
+from airflow.operators.python import PythonOperator
+
+tarea_empaquetar = PythonOperator(
+    task_id="empaquetar_resultados",
+    python_callable=empaquetar_resultados,
+    dag=dag,
+)
+🔗 Paso 3: Conecta la tarea al final del flujo
+En la parte donde defines el orden de ejecución, añade esta línea para que se ejecute al final:
+
+python
+Copiar
+Editar
+guardar_postgresql >> crear_grafico_linea >> crear_histograma >> modelo_machine_learning >> tarea_empaquetar
+O si tienes algo como task1 >> task2, agrega >> tarea_empaquetar al final de la última.
+
+🚀 Resultado
+Una vez ejecutes el DAG, en la carpeta /opt/airflow/salidas/ (y también en tu Windows local), verás algo como:
+
+python
+Copiar
+Editar
+resultados_20250412_1055.zip
+Y dentro estará todo lo que generaste 🎯
+
+¿Te genero el código completo del DAG actualizado o solo el fragmento para que lo
+---------------------
+
+proyecto_bigdata
+
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from datetime import datetime, timedelta
+import pandas as pd
+import dask.dataframe as dd
+from sqlalchemy import create_engine
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+import numpy as np
+import os
+
+# Rutas
+path = "/opt/airflow/salidas/"
+db_url = 'postgresql://airflow:airflow@postgres:5432/airflow'
+
+# Argumentos por defecto
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
+
+# Función 1: Ingesta (Kafka simulado prodcutor)
+def leer_datos_kafka():
+    df = pd.read_csv('/opt/airflow/scripts/datos.csv')  # archivo simulado
+    df.to_csv(f'{path}datos_leidos.csv', index=False)
+
+# Función 2: Procesamiento con Dask (simula consumidor)
+def procesar_datos_dask():
+    df = dd.read_csv(f'{path}datos_leidos.csv')
+    df['valor'] = df['valor'] * 2
+    df.compute().to_csv(f'{path}datos_procesados.csv', index=False)
+
+# Función 3: Guardar en SQL
+def guardar_en_sql():
+    df = pd.read_csv(f'{path}datos_procesados.csv')
+    engine = create_engine(db_url)
+    df.to_sql('tabla_datos', engine, if_exists='replace', index=False)
+
+# Función 4a: Visualización 1 - Línea
+def graficar_linea():
+    df = pd.read_csv(f'{path}datos_procesados.csv')
+    plt.figure()
+    plt.plot(df['valor'])
+    plt.title('Gráfico de Línea - Valor')
+    plt.xlabel('Índice')
+    plt.ylabel('Valor')
+    plt.savefig(f'{path}grafico_linea.png')
+
+# Función 4b: Visualización 2 - Histograma
+def graficar_histograma():
+    df = pd.read_csv(f'{path}datos_procesados.csv')
+    plt.figure()
+    df['valor'].hist()
+    plt.title('Histograma de valores')
+    plt.xlabel('Valor')
+    plt.ylabel('Frecuencia')
+    plt.savefig(f'{path}grafico_histograma.png')
+
+# Función 5: Modelo de ML
+def modelo_ml():
+    df = pd.read_csv(f'{path}datos_procesados.csv')
+    X = np.arange(len(df)).reshape(-1, 1)
+    y = df['valor'].values
+    model = LinearRegression().fit(X, y)
+    y_pred = model.predict(X)
+    plt.figure()
+    plt.scatter(X, y, label='Datos reales')
+    plt.plot(X, y_pred, color='red', label='Predicción')
+    plt.title('Regresión lineal')
+    plt.legend()
+    plt.savefig(f'{path}modelo_ml.png')
+
+# DAG
+with DAG(
+    dag_id='proyecto_bigdata',
+    default_args=default_args,
+    start_date=datetime(2024, 1, 1),
+    schedule_interval='@daily',
+    catchup=False,
+    tags=['bigdata']
+) as dag:
+
+    t1 = PythonOperator(task_id='leer_kafka', python_callable=leer_datos_kafka)
+    t2 = PythonOperator(task_id='procesar_datos_dask', python_callable=procesar_datos_dask)
+    t3 = PythonOperator(task_id='guardar_postgresql', python_callable=guardar_en_sql)
+    t4a = PythonOperator(task_id='crear_grafico_linea', python_callable=graficar_linea)
+    t4b = PythonOperator(task_id='crear_histograma', python_callable=graficar_histograma)
+    t5 = PythonOperator(task_id='modelo_machine_learning', python_callable=modelo_ml)
+
+    # Dependencias
+    t1 >> t2 >> t3 >> [t4a, t4b] >> t5
+
+--------------------
+Por favor, guíame para la construcción del video (grabando el paso a paso),
+
+
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from datetime import datetime, timedelta
+import pandas as pd
+import dask.dataframe as dd
+from sqlalchemy import create_engine
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+import numpy as np
+import os
+
+# Rutas
+path = "/opt/airflow/salidas/"
+db_url = 'postgresql://airflow:airflow@postgres:5432/airflow'
+
+# Argumentos por defecto
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
+
+# 1. Ingesta de datos (Kafka simulado)
+# 1. Ingesta de datos (Kafka simulado)
+def leer_datos_kafka():
+    import pandas as pd
+    import os
+
+    input_path = '/opt/airflow/salidas/datos_procesados.csv'
+    output_path = '/opt/airflow/salidas/datos_leidos.csv'
+
+    if not os.path.exists(input_path):
+        raise FileNotFoundError(f"Archivo no encontrado: {input_path}")
+
+    df = pd.read_csv(input_path)
+    df.to_csv(output_path, index=False)
+    print(f'Datos simulados como Kafka leídos desde {input_path} y guardados en {output_path}')
+
+# 2. Procesamiento con Dask
+def procesar_datos_dask():
+    df = dd.read_csv(f'{path}datos_leidos.csv')
+    df['valor'] = df['valor'] * 2
+    df.compute().to_csv(f'{path}datos_procesados.csv', index=False)
+
+# 3. Guardar en SQL
+def guardar_en_sql():
+    df = pd.read_csv(f'{path}datos_procesados.csv')
+    engine = create_engine(db_url)
+    df.to_sql('tabla_datos', engine, if_exists='replace', index=False)
+
+# 4a. Gráfico de línea
+def graficar_linea():
+    df = pd.read_csv(f'{path}datos_procesados.csv')
+    plt.figure()
+    plt.plot(df['valor'])
+    plt.title('Gráfico de Línea - Valor')
+    plt.xlabel('Índice')
+    plt.ylabel('Valor')
+    plt.savefig(f'{path}grafico_linea.png')
+
+# 4b. Función para graficar outliers
+def crear_grafico_outliers():
+    import os
+    os.system("python /opt/airflow/scripts/graficar_outliers.py")
+
+# 4c. Histograma
+def graficar_histograma():
+    df = pd.read_csv(f'{path}datos_procesados.csv')
+    plt.figure()
+    df['valor'].hist()
+    plt.title('Histograma de valores')
+    plt.xlabel('Valor')
+    plt.ylabel('Frecuencia')
+    plt.savefig(f'{path}grafico_histograma.png')
+
+# 5. Modelo simple en línea (visual)
+def modelo_ml():
+    df = pd.read_csv(f'{path}datos_procesados.csv')
+    X = np.arange(len(df)).reshape(-1, 1)
+    y = df['valor'].values
+    model = LinearRegression().fit(X, y)
+    y_pred = model.predict(X)
+    plt.figure()
+    plt.scatter(X, y, label='Datos reales')
+    plt.plot(X, y_pred, color='red', label='Predicción')
+    plt.title('Regresión lineal')
+    plt.legend()
+    plt.savefig(f'{path}modelo_ml.png')
+
+# 6. Nuevo task: ejecutar script externo para entrenar modelo y guardar predicciones
+def entrenar_modelo_ml():
+    script_path = "/opt/airflow/scripts/modelo_ml.py"
+    os.system(f"python {script_path}")
+
+# DAG
+with DAG(
+    dag_id='proyecto_bigdata',
+    default_args=default_args,
+    start_date=datetime(2024, 1, 1),
+    schedule_interval='@daily',
+    catchup=False,
+    tags=['bigdata'],
+    description='Flujo de datos del IDEAM - Precipitación mensual 2020-2025. Departamento del Meta, estación SENA (Villavicencio).',
+    doc_md="""
+    Este DAG procesa datos de precipitación mensual total del IDEAM, correspondientes al período 2020–2025, para el departamento del **Meta**,
+    ciudad **Villavicencio**, estación de medición **SENA**. Se realiza limpieza, análisis visual y modelado de predicción.
+    """
+) as dag:
+
+    t1 = PythonOperator(task_id='leer_kafka', python_callable=leer_datos_kafka)
+    t2 = PythonOperator(task_id='procesar_datos_dask', python_callable=procesar_datos_dask)
+    t3 = PythonOperator(task_id='guardar_postgresql', python_callable=guardar_en_sql)
+    t4a = PythonOperator(task_id='crear_grafico_linea', python_callable=graficar_linea)
+    t4b = PythonOperator(task_id='crear_grafico_outliers', python_callable=crear_grafico_outliers)
+    t4c = PythonOperator(task_id='crear_histograma', python_callable=graficar_histograma)
+    t5 = PythonOperator(task_id='modelo_machine_learning', python_callable=modelo_ml)
+    t6 = PythonOperator(task_id='entrenar_modelo_ml', python_callable=entrenar_modelo_ml)
+
+    # Dependencias
+    t1 >> t2 >> t3 >> [t4a, t4b, t4c] >> t5 >> t6
+
+----------------------
+DOCKER
+
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  airflow-webserver:
+    image: apache/airflow:2.8.1
+    build:                         # 👈 AÑADIR ESTA SECCIÓN
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+    volumes:
+      - ./dags:/opt/airflow/dags
+      
+      - ./salidas:/opt/airflow/salidas
+    ports:
+      - "8080:8080"
+    command: >
+      bash -c "airflow db migrate && airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin && airflow webserver"
+
+  airflow-scheduler:
+    image: apache/airflow:2.8.1
+    build:                         # 👈 AÑADIR ESTA SECCIÓN TAMBIÉN AQUÍ
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - airflow-webserver
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+    volumes:
+      - ./dags:/opt/airflow/dags
+    command: airflow scheduler
+
+volumes:
+  postgres-db-volume:
+
+------------------
+

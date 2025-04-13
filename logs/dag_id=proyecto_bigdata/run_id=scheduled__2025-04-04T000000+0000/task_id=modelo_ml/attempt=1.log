@@ -1,0 +1,14 @@
+[2025-04-10T16:39:42.667+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: proyecto_bigdata.modelo_ml scheduled__2025-04-04T00:00:00+00:00 [queued]>
+[2025-04-10T16:39:42.681+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: proyecto_bigdata.modelo_ml scheduled__2025-04-04T00:00:00+00:00 [queued]>
+[2025-04-10T16:39:42.681+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 1
+[2025-04-10T16:39:42.701+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): modelo_ml> on 2025-04-04 00:00:00+00:00
+[2025-04-10T16:39:42.704+0000] {standard_task_runner.py:60} INFO - Started process 251 to run task
+[2025-04-10T16:39:42.711+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'proyecto_bigdata', 'modelo_ml', 'scheduled__2025-04-04T00:00:00+00:00', '--job-id', '18', '--raw', '--subdir', 'DAGS_FOLDER/proyecto_bigdata_dag.py', '--cfg-path', '/tmp/tmpsrwqmq5w']
+[2025-04-10T16:39:42.715+0000] {standard_task_runner.py:88} INFO - Job 18: Subtask modelo_ml
+[2025-04-10T16:39:42.791+0000] {task_command.py:423} INFO - Running <TaskInstance: proyecto_bigdata.modelo_ml scheduled__2025-04-04T00:00:00+00:00 [running]> on host 8cda24561222
+[2025-04-10T16:39:42.892+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='proyecto_bigdata' AIRFLOW_CTX_TASK_ID='modelo_ml' AIRFLOW_CTX_EXECUTION_DATE='2025-04-04T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-04-04T00:00:00+00:00'
+[2025-04-10T16:39:42.894+0000] {logging_mixin.py:188} INFO - 🤖 Entrenando modelo de machine learning
+[2025-04-10T16:39:42.895+0000] {python.py:201} INFO - Done. Returned value was: None
+[2025-04-10T16:39:42.904+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=proyecto_bigdata, task_id=modelo_ml, execution_date=20250404T000000, start_date=20250410T163942, end_date=20250410T163942
+[2025-04-10T16:39:42.923+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2025-04-10T16:39:42.937+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check
