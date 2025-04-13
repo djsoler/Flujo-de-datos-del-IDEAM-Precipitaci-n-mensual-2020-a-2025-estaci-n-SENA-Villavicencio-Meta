@@ -70,10 +70,10 @@ airflow db init
 
 ```bash
 airflow users create \
-  --username admin \
+  --username  \
   --firstname Johanna \
   --lastname Soler \
-  --role Admin \
+  --role  \
   --email johannasolermine@gmail.com
 ```
 4. Iniciar los servicios de Airflow:
